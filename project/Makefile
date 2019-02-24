@@ -1,17 +1,20 @@
-all: lexyacc-code/calc3i.exe
+LEXYACC_DIR = lexyacc-code
+BUILD_DIR = build
+BIN_DIR = bin
 
-lexyacc-code/y.tab.c lexyacc-code/y.tab.h: lexyacc-code/calc3.y
-	bison -y -d lexyacc-code/calc3.y
+all: $(BIN_DIR)/calc3i.exe
 
-lexyacc-code/lex.yy.c: lexyacc-code/calc3.l
-	flex lexyacc-code/calc3.l
+$(BIN_DIR)/calc3i.exe: $(LEXYACC_DIR)/calc3i.c lexyacc_stuff
+        cp $(LEXYACC_DIR)/calc3i.c $(BUILD_DIR)
+        gcc $(BUILD_DIR)/y.tab.o $(BUILD_DIR)/lex.yy.o $(BUILD_DIR)/calc3i.c -o $(BIN_DIR)/calc3i.exe
 
-lexyacc-code/lex.yy.o lexyacc-code/y.tab.o: lexyacc-code/lex.yy.c lexyacc-code/y.tab.c
-	gcc -c lexyacc-code/y.tab.c lexyacc-code/lex.yy.c
+lexyacc_stuff:
+	bison -y -d $(LEXYACC_DIR)/calc3.y -o $(BUILD_DIR)/y.tab.c
+	flex -o $(BUILD_DIR)/lex.yy.c $(LEXYACC_DIR)/calc3.l
+	cp $(LEXYACC_DIR)/calc3.h $(BUILD_DIR)/calc3.h
+	gcc -c $(BUILD_DIR)/y.tab.c -o $(BUILD_DIR)/y.tab.o
+	gcc -c $(BUILD_DIR)/lex.yy.c -o $(BUILD_DIR)/lex.yy.o
 
-lexyacc-code/calc3i.exe: lexyacc-code/y.tab.o lexyacc-code/lex.yy.o lexyacc-code/calc3i.c
-	gcc lexyacc-code/y.tab.o lexyacc-code/lex.yy.o lexyacc-code/calc3i.c -o lexyacc-code/calc3i.exe
-
-
-clean: 
-	rm lexyacc-code/y.tab.c lexyacc-code/y.tab.h lexyacc-code/lex.yy.c lexyacc-code/lex.yy.o lexyacc-code/y.tab.o
+clean:
+	rm $(BUILD_DIR)/*
+	rm $(BIN_DIR)/*
