@@ -9,10 +9,10 @@ output_assembly_file="$output_executable_file.s"
 echo ".data" > $output_assembly_file
 
 #Allocate space for all variables (a-z)
-for x in {a..z}
-do
-        echo ".global $x" >> $output_assembly_file
-done
+echo ".symtab:" >> $output_assembly_file
+echo -e "\t.zero 208" >> $output_assembly_file # 26 * 8 = 208
+
+
 
 #Add lines that are needed just before the actual code
 echo ".text" >> $output_assembly_file
@@ -53,11 +53,12 @@ write_gcd()
 			pop rcx
 			pop rax
 			ret"
-	output_str+="gcd:\n
+	output_str+="gcd:\n"
+}
 
 #Add the code to the File
-#cat $input_file | ./calc3i.exe >> $output_assembly_file
+cat $input_file | bin/calc3i.exe >> $output_assembly_file
 
 
 #Compile .s-File and output it as executable file
-#gcc $output_assembly_file -no-pie >> $output_file
+#gcc $output_assembly_file -no-pie -o $output_executable_file
