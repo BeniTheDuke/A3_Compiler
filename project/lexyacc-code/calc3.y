@@ -24,13 +24,15 @@ int sym[26];                    /* symbol table */
 
 %token <iValue> INTEGER
 %token <sIndex> VARIABLE
-%token WHILE IF PRINT
+%token WHILE IF PRINT 
 %nonassoc IFX
 %nonassoc ELSE
 
 %left GE LE EQ NE '>' '<'
+%left GCD
 %left '+' '-'
 %left '*' '/'
+%right LNTWO FACT
 %nonassoc UMINUS
 
 %type <nPtr> stmt expr stmt_list
@@ -66,6 +68,9 @@ expr:
           INTEGER               { $$ = con($1); }
         | VARIABLE              { $$ = id($1); }
         | '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
+        | FACT expr             { $$ = opr(FACT, 1, $2); }
+        | LNTWO expr            { $$ = opr(LNTWO, 1, $2); }
+        | expr GCD expr         { $$ = opr(GCD, 2, $1, $3); }
         | expr '+' expr         { $$ = opr('+', 2, $1, $3); }
         | expr '-' expr         { $$ = opr('-', 2, $1, $3); }
         | expr '*' expr         { $$ = opr('*', 2, $1, $3); }
@@ -81,11 +86,15 @@ expr:
 
 %%
 
+#define SIZEOF_NODETYPE ((char *)&p->con - (char *)p)
+
 nodeType *con(int value) {
     nodeType *p;
+    size_t nodeSize;
 
     /* allocate node */
-    if ((p = malloc(sizeof(nodeType))) == NULL)
+    nodeSize = SIZEOF_NODETYPE + sizeof(conNodeType);
+    if ((p = malloc(nodeSize)) == NULL)
         yyerror("out of memory");
 
     /* copy information */
@@ -97,9 +106,11 @@ nodeType *con(int value) {
 
 nodeType *id(int i) {
     nodeType *p;
+    size_t nodeSize;
 
     /* allocate node */
-    if ((p = malloc(sizeof(nodeType))) == NULL)
+    nodeSize = SIZEOF_NODETYPE + sizeof(idNodeType);
+    if ((p = malloc(nodeSize)) == NULL)
         yyerror("out of memory");
 
     /* copy information */
@@ -112,10 +123,13 @@ nodeType *id(int i) {
 nodeType *opr(int oper, int nops, ...) {
     va_list ap;
     nodeType *p;
+    size_t nodeSize;
     int i;
 
-    /* allocate node, extending op array */
-    if ((p = malloc(sizeof(nodeType) + (nops-1) * sizeof(nodeType *))) == NULL)
+    /* allocate node */
+    nodeSize = SIZEOF_NODETYPE + sizeof(oprNodeType) +
+        (nops - 1) * sizeof(nodeType*);
+    if ((p = malloc(nodeSize)) == NULL)
         yyerror("out of memory");
 
     /* copy information */

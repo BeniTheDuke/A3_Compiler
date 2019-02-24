@@ -12,12 +12,7 @@ void yyerror(char *);
                 return VARIABLE;
             }
 
-0           {
-                yylval.iValue = atoi(yytext);
-                return INTEGER;
-            }
-
-[1-9][0-9]* {
+[0-9]+      {
                 yylval.iValue = atoi(yytext);
                 return INTEGER;
             }
@@ -34,6 +29,9 @@ void yyerror(char *);
 "if"            return IF;
 "else"          return ELSE;
 "print"         return PRINT;
+"fact"          return FACT;
+"gcd"           return GCD;
+"lntwo"         return LNTWO;
 
 [ \t\n]+        ;       /* ignore whitespace */
 
