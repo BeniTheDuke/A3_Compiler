@@ -13,7 +13,8 @@ int ex(nodeType *p) {
         printf("\tpush\t%d\n", p->con.value); 
         break;
     case typeId:        
-        printf("\tpush\t%c\n", p->id.i + 'a'); 
+	printf("\tmov\t%d,rax\n", p->id.i);
+        printf("\tpush\tsymtab(,rax,8)\n");
         break;
     case typeOpr:
         switch(p->opr.oper) {
@@ -47,16 +48,14 @@ int ex(nodeType *p) {
             break;
         case PRINT:     
             ex(p->opr.op[0]);
-            printf("\tprint\n");
-		//mov	edx,4		; message length
-		//mov	ecx,msg		; message to write
-		//mov	ebx,1		; file descriptor (stdout)
-		//mov	eax,4		; system call number (sys_write)
-		//int	0x80		; call kernel
+            // printf("\tprint\n");
+	    printf("\tpop\trdx\n");
+	    printf("\tcall\tprint\n");
             break;
         case '=':       
             ex(p->opr.op[1]);
-            printf("\tpop\t%c\n", p->opr.op[0]->id.i + 'a');
+	    printf("\tmov\t%d,rax\n", p->opr.op[0]->id.i);
+            printf("\tpop\tsymtab(,rax,8)\n");
             break;
         case UMINUS:    
             ex(p->opr.op[0]);
@@ -74,7 +73,7 @@ int ex(nodeType *p) {
             ex(p->opr.op[0]);
             ex(p->opr.op[1]);
             switch(p->opr.oper) {
-	    case GCD:   printf("\tpop\trdx\n"); printf("\tpop\trsx\n"); printf("\tpop\trsx\n"); printf("\tcall gcd\n"); break;
+	    case GCD:   printf("\tpop\trdx\n"); printf("\tpop\trsx\n"); printf("\tcall\tgcd\n"); break;
             case '+':   printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tadd\trax,rdx\n"); break;
             case '-':   printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tsub\trax,rdx\n"); break;
             case '*':   printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tmul\trdx\n"); break;
