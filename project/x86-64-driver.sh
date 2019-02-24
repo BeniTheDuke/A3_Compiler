@@ -3,6 +3,7 @@
 prog_name=$0
 input_file=$1
 output_executable_file=${input_file::-5}
+output_object_file="$output_executable_file.o" 
 output_assembly_file="$output_executable_file.s"
 
 
@@ -59,6 +60,7 @@ write_gcd()
 #Add the code to the File
 cat $input_file | bin/calc3i.exe >> $output_assembly_file
 
+as "$output_assembly_file" -o "$output_object_file"
 
 #Compile .s-File and output it as executable file
-#gcc $output_assembly_file -no-pie -o $output_executable_file
+gcc $output_object_file -no-pie -o $output_executable_file
