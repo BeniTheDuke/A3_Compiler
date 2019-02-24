@@ -5,8 +5,9 @@ BIN_DIR = bin
 all: $(BIN_DIR)/calc3i.exe
 
 $(BIN_DIR)/calc3i.exe: $(LEXYACC_DIR)/calc3i.c lexyacc_stuff
-        cp $(LEXYACC_DIR)/calc3i.c $(BUILD_DIR)
-        gcc $(BUILD_DIR)/y.tab.o $(BUILD_DIR)/lex.yy.o $(BUILD_DIR)/calc3i.c -o $(BIN_DIR)/calc3i.exe
+	cp $(LEXYACC_DIR)/calc3i.c $(BUILD_DIR)
+	gcc $(BUILD_DIR)/y.tab.o $(BUILD_DIR)/lex.yy.o $(BUILD_DIR)/calc3i.c -o $(BIN_DIR)/calc3i.exe
+
 
 lexyacc_stuff:
 	bison -y -d $(LEXYACC_DIR)/calc3.y -o $(BUILD_DIR)/y.tab.c
