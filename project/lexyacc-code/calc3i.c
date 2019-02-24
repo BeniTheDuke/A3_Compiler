@@ -21,6 +21,7 @@ int ex(nodeType *p) {
             printf("L%03d:\n", lbl1 = lbl++);
             ex(p->opr.op[0]);
             // printf("\tjz\tL%03d\n", lbl2 = lbl++);
+	    lbl2 = lbl++;
             ex(p->opr.op[1]);
             printf("\tjmp\tL%03d\n", lbl1);
             printf("L%03d:\n", lbl2);
@@ -30,6 +31,7 @@ int ex(nodeType *p) {
             if (p->opr.nops > 2) {
                 /* if else */
                 // printf("\tjz\tL%03d\n", lbl1 = lbl++);
+		lbl1 = lbl++;
                 ex(p->opr.op[1]);
                 printf("\tjmp\tL%03d\n", lbl2 = lbl++);
                 printf("L%03d:\n", lbl1);
@@ -38,6 +40,7 @@ int ex(nodeType *p) {
             } else {
                 /* if */
                 // printf("\tjz\tL%03d\n", lbl1 = lbl++);
+		lbl1 = lbl++;
                 ex(p->opr.op[1]);
                 printf("L%03d:\n", lbl1);
             }
@@ -76,12 +79,12 @@ int ex(nodeType *p) {
             case '-':   printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tsub\trax,rdx\n"); break;
             case '*':   printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tmul\trdx\n"); break;
             case '/':   printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tmov\tRBX,0\n"); printf("\tdiv\trdx,0\n"); break;
-            case '<':   printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tcmp\trax,rdx\n"); printf("\tjl\tL%03d\n", lbl1 = lbl++); break;
-            case '>':   printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tcmp\trax,rdx\n"); printf("\tjg\tL%03d\n", lbl1 = lbl++); break; 
-            case GE:    printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tcmp\trax,rdx\n"); printf("\tjge\tL%03d\n", lbl2 = lbl++); break;
-            case LE:    printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tcmp\trax,rdx\n"); printf("\tjle\tL%03d\n", lbl2 = lbl++); break;
-            case NE:    printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tcmp\trax,rdx\n"); printf("\tjne\tL%03d\n", lbl2 = lbl++); break;
-            case EQ:    printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tcmp\trax,rdx\n"); printf("\tje\tL%03d\n", lbl2 = lbl++); break;
+            case '<':   printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tcmp\trax,rdx\n"); printf("\tjl\tL%03d\n", lbl); break;
+            case '>':   printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tcmp\trax,rdx\n"); printf("\tjg\tL%03d\n", lbl); break; 
+            case GE:    printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tcmp\trax,rdx\n"); printf("\tjge\tL%03d\n", lbl); break;
+            case LE:    printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tcmp\trax,rdx\n"); printf("\tjle\tL%03d\n", lbl); break;
+            case NE:    printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tcmp\trax,rdx\n"); printf("\tjne\tL%03d\n", lbl); break;
+            case EQ:    printf("\tpop\trax\n"); printf("\tpop\trdx\n"); printf("\tcmp\trax,rdx\n"); printf("\tje\tL%03d\n", lbl); break;
             }
         }
     }
